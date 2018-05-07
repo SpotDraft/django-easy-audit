@@ -15,13 +15,22 @@ from easyaudit.models import CRUDEvent, LoginEvent, RequestEvent
 
 def get_model_list(class_list):
     """
-    Receives a list of strings with app_name.model_name format
-    and turns them into classes. If an item is already a class
-    it ignores it.
+    Receives a list of strings or arrays or classes.
+    
+    If an item is a string with app_name.model_name format,
+    it is turned into classes.
+   
+    If an item is a list with (app_name, model_name,) format,
+    it is turned into classes.
+    
+    If an item is already a class it ignores it.
     """
     for idx, item in enumerate(class_list):
         if isinstance(item, six.string_types):
             model_class = apps.get_model(item)
+            class_list[idx] = model_class
+        if isinstance(item, list):
+            model_class = apps.get_model(item[0], item[1])
             class_list[idx] = model_class
 
 
