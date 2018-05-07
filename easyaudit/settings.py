@@ -29,7 +29,7 @@ def get_model_list(class_list):
         if isinstance(item, six.string_types):
             model_class = apps.get_model(item)
             class_list[idx] = model_class
-        if isinstance(item, list):
+        if isinstance(item, (list, tuple)):
             model_class = apps.get_model(item[0], item[1])
             class_list[idx] = model_class
 
