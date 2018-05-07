@@ -50,7 +50,8 @@ Below are some of the settings you may want to use. These should be defined in y
 
   A list of Django models which will be ignored by Django Easy Audit.
   Use it to prevent logging one or more of your project's models.
-  List items can be classes or strings with `app_name.model_name` format.
+  List items can be classes or strings with `app_name.model_name` or
+  a list with `[app_name, model_name]` format.
 
 * `DJANGO_EASY_AUDIT_UNREGISTERED_URLS_EXTRA`
 
