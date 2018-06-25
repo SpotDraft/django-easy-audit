@@ -24,13 +24,13 @@ class CRUDEvent(models.Model):
     event_type = models.SmallIntegerField(choices=TYPES)
     object_id = models.IntegerField()  # we should try to allow other ID types
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_repr = models.CharField(max_length=255, null=True, blank=True)
-    object_json_repr = models.TextField(null=True, blank=True)
-    changed_fields = models.TextField(null=True, blank=True)
+    object_repr = models.TextField(null=True, blank=True, default=None)
+    object_json_repr = models.TextField(null=True, blank=True, default=None)
+    changed_fields = models.TextField(null=True, blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                              blank=True, on_delete=models.SET_NULL)
-    user_pk_as_string = models.CharField(max_length=255, null=True, blank=True,
-                                     help_text='String version of the user pk')
+    user_pk_as_string = models.TextField(null=True, blank=True,
+                                     help_text='String version of the user pk', default=None)
     datetime = models.DateTimeField(auto_now_add=True)
 
     def is_create(self):
