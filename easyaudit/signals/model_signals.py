@@ -1,5 +1,6 @@
 import json
 import logging
+import traceback
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 def should_audit(instance):
     """Returns True or False to indicate whether the instance
     should be audited or not, depending on the project settings."""
-
+    logger.info("Easy Audit in should_audit func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     # do not audit any model listed in UNREGISTERED_CLASSES
     for unregistered_class in UNREGISTERED_CLASSES:
         if isinstance(instance, unregistered_class):
@@ -39,12 +40,15 @@ def should_audit(instance):
             return False
 
     # all good
+    if not instance.pk:
+        return False
     return True
 
 
 # signals
 def pre_save(sender, instance, raw, using, update_fields, **kwargs):
     """https://docs.djangoproject.com/es/1.10/ref/signals/#post-save"""
+    logger.info("Easy Audit in should_audit func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     if raw:
       # Return if loading Fixtures      
       return
@@ -97,6 +101,7 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                     user_pk_as_string=str(user.pk) if user else user
                 )
     except Exception:
+        traceback.print_exc()
         logger.exception('easy audit had a pre-save exception.')
 
 
@@ -147,6 +152,7 @@ def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
                     user_pk_as_string=str(user.pk) if user else user
                 )
     except Exception:
+        traceback.print_exc()
         logger.exception('easy audit had a post-save exception.')
 
 
@@ -169,6 +175,7 @@ def _m2m_rev_field_name(model1, model2):
 
 def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
     """https://docs.djangoproject.com/es/1.10/ref/signals/#m2m-changed"""
+    logger.info("Easy Audit in m2m_changed func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     try:
         with transaction.atomic():
             if not should_audit(instance):
@@ -218,6 +225,7 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
                 user_pk_as_string=str(user.pk) if user else user
             )
     except Exception:
+        traceback.print_exc()
         logger.exception('easy audit had an m2m-changed exception.')
 
 
@@ -253,6 +261,7 @@ def post_delete(sender, instance, using, **kwargs):
                 user_pk_as_string=str(user.pk) if user else user
             )
     except Exception:
+        traceback.print_exc()
         logger.exception('easy audit had a post-delete exception.')
 
 
