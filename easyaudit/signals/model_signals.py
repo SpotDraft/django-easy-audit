@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 def should_audit(instance):
     """Returns True or False to indicate whether the instance
     should be audited or not, depending on the project settings."""
-    logger.info("Easy Audit in should_audit func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     # do not audit any model listed in UNREGISTERED_CLASSES
     for unregistered_class in UNREGISTERED_CLASSES:
         if isinstance(instance, unregistered_class):
@@ -48,7 +47,6 @@ def should_audit(instance):
 # signals
 def pre_save(sender, instance, raw, using, update_fields, **kwargs):
     """https://docs.djangoproject.com/es/1.10/ref/signals/#post-save"""
-    logger.info("Easy Audit in should_audit func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     if raw:
       # Return if loading Fixtures      
       return
@@ -175,7 +173,6 @@ def _m2m_rev_field_name(model1, model2):
 
 def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
     """https://docs.djangoproject.com/es/1.10/ref/signals/#m2m-changed"""
-    logger.info("Easy Audit in m2m_changed func for model %s and instance.pk %s",type(instance).__name__, instance.pk)
     try:
         with transaction.atomic():
             if not should_audit(instance):
