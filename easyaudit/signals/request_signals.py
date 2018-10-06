@@ -7,6 +7,7 @@ from django.conf import settings
 
 from easyaudit.models import RequestEvent
 from easyaudit.settings import REMOTE_ADDR_HEADER, UNREGISTERED_URLS, WATCH_REQUEST_EVENTS
+from easyaudit.middleware.easyaudit import get_current_request, get_current_user
 
 import re
 
@@ -24,9 +25,13 @@ def request_started_handler(sender, environ, **kwargs):
     if not should_log_url(environ['PATH_INFO']):
         return
 
-    # get the user from cookies
     user = None
-    if environ.get('HTTP_COOKIE'):
+    # get the user from request
+    if get_current_user():
+        user = get_current_user()
+
+    # get the user from cookies
+    if not user and environ.get('HTTP_COOKIE'):
         cookie = SimpleCookie() # python3 compatibility
         cookie.load(environ['HTTP_COOKIE'])
 
@@ -45,13 +50,14 @@ def request_started_handler(sender, environ, **kwargs):
                     user = get_user_model().objects.get(id=user_id)
                 except:
                     user = None
+    
 
     request_event = RequestEvent.objects.create(
         url=environ['PATH_INFO'],
         method=environ['REQUEST_METHOD'],
         query_string=environ['QUERY_STRING'],
         user=user,
-        remote_ip=environ[REMOTE_ADDR_HEADER],
+        remote_ip=get_current_request().META[REMOTE_ADDR_HEADER],
         datetime=timezone.now()
     )
 
