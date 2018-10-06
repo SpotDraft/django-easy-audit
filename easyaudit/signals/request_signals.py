@@ -25,10 +25,10 @@ def request_started_handler(sender, environ, **kwargs):
     if not should_log_url(environ['PATH_INFO']):
         return
 
-    user = None
     # get the user from request
-    if get_current_user():
-        user = get_current_user()
+    user = get_current_user()
+    if user and user.is_anonymous:
+        user = None
 
     # get the user from cookies
     if not user and environ.get('HTTP_COOKIE'):
