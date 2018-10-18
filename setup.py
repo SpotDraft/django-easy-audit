@@ -10,15 +10,16 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-easy-audit',
-    version='1.0',
+    version='1.2',
     packages=find_packages(),
+    install_requires=['django-ipware>=2.1'],
     include_package_data=True,
     license='GPL3',
     description='Yet another Django audit log app, hopefully the simplest one.',
     long_description=README,
     url='https://github.com/soynatan/django-easy-audit',
-    author='Natán Calzolari',
-    author_email='natancalzolari@gmail.com',
+    author='Madhav Bhagat',
+    author_email='madhav@spotdraft.com',
     classifiers=[
         'Environment :: Plugins',
         'Framework :: Django',

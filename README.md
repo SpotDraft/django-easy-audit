@@ -4,6 +4,10 @@ Yet another Django audit log app, hopefully the easiest one.
 
 This app allows you to keep track of every action taken by your users.
 
+## SpotDraft Changes
+- Use ipware package to detect Remote IP Address. Please see documentation for configuration options
+- Save ClientIP for CRUDEvent
+
 ## Quickstart
 
 1. Install Django Easy Audit by running `pip install django-easy-audit`.

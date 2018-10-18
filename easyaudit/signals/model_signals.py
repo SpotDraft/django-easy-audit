@@ -10,6 +10,7 @@ from django.db import transaction
 from django.db.models import signals
 from django.utils import timezone
 from django.utils.encoding import force_text
+from easyaudit.utils import get_client_ip
 
 from easyaudit.middleware.easyaudit import get_current_request,\
                                            get_current_user
@@ -96,7 +97,8 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                     object_id=instance.pk,
                     user=user,
                     datetime=timezone.now(),
-                    user_pk_as_string=str(user.pk) if user else user
+                    user_pk_as_string=str(user.pk) if user else user,
+                    remote_ip=get_client_ip(get_current_request())
                 )
     except Exception:
         traceback.print_exc()
@@ -147,7 +149,8 @@ def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
                     object_id=instance.pk,
                     user=user,
                     datetime=timezone.now(),
-                    user_pk_as_string=str(user.pk) if user else user
+                    user_pk_as_string=str(user.pk) if user else user,
+                    remote_ip=get_client_ip(get_current_request())
                 )
     except Exception:
         traceback.print_exc()
@@ -219,7 +222,8 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
                 object_id=instance.pk,
                 user=user,
                 datetime=timezone.now(),
-                user_pk_as_string=str(user.pk) if user else user
+                user_pk_as_string=str(user.pk) if user else user,
+                remote_ip=get_client_ip(get_current_request())
             )
     except Exception:
         traceback.print_exc()
@@ -255,7 +259,8 @@ def post_delete(sender, instance, using, **kwargs):
                 object_id=instance.pk,
                 user=user,
                 datetime=timezone.now(),
-                user_pk_as_string=str(user.pk) if user else user
+                user_pk_as_string=str(user.pk) if user else user,
+                remote_ip=get_client_ip(get_current_request())
             )
     except Exception:
         traceback.print_exc()

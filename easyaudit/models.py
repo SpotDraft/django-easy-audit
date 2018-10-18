@@ -32,6 +32,7 @@ class CRUDEvent(models.Model):
     user_pk_as_string = models.TextField(null=True, blank=True,
                                      help_text='String version of the user pk', default=None)
     datetime = models.DateTimeField(auto_now_add=True)
+    remote_ip = models.CharField(max_length=50, null=True, db_index=True)
 
     def is_create(self):
         return self.CREATE == self.event_type

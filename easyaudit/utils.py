@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import NOT_PROVIDED, DateTimeField
 from django.utils import timezone
-
+from ipware import get_client_ip as _get_client_ip
 
 def get_field_value(obj, field):
     """
@@ -60,3 +60,9 @@ def model_delta(old_model, new_model):
         delta = None
 
     return delta
+
+
+def get_client_ip(request):
+    if not request:
+        return None
+    return _get_client_ip(request)[0]

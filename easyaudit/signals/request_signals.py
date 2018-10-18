@@ -1,12 +1,14 @@
+from collections import namedtuple
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.models import Session
 from django.core.signals import request_started
 from django.http.cookie import SimpleCookie
 from django.utils import six, timezone
 from django.conf import settings
+from easyaudit.utils import get_client_ip
 
 from easyaudit.models import RequestEvent
-from easyaudit.settings import REMOTE_ADDR_HEADER, UNREGISTERED_URLS, WATCH_REQUEST_EVENTS
+from easyaudit.settings import UNREGISTERED_URLS, WATCH_REQUEST_EVENTS
 from easyaudit.middleware.easyaudit import get_current_request, get_current_user
 
 import re
@@ -21,6 +23,14 @@ def should_log_url(url):
     return True
 
 
+def record(name, d):
+    """
+    Quick and dirty implementation to convert {'META': blah} so that 
+    a.META works just like a.['META']
+    """
+    return namedtuple(name, d.keys())(**d)
+
+
 def request_started_handler(sender, environ, **kwargs):
     if not should_log_url(environ['PATH_INFO']):
         return
@@ -32,7 +42,7 @@ def request_started_handler(sender, environ, **kwargs):
 
     # get the user from cookies
     if not user and environ.get('HTTP_COOKIE'):
-        cookie = SimpleCookie() # python3 compatibility
+        cookie = SimpleCookie()  # python3 compatibility
         cookie.load(environ['HTTP_COOKIE'])
 
         session_cookie_name = settings.SESSION_COOKIE_NAME
@@ -50,17 +60,19 @@ def request_started_handler(sender, environ, **kwargs):
                     user = get_user_model().objects.get(id=user_id)
                 except:
                     user = None
-    
 
     request_event = RequestEvent.objects.create(
         url=environ['PATH_INFO'],
         method=environ['REQUEST_METHOD'],
         query_string=environ['QUERY_STRING'],
         user=user,
-        remote_ip=get_current_request().META[REMOTE_ADDR_HEADER],
-        datetime=timezone.now()
-    )
+        remote_ip=get_client_ip(record('FakeRequest', {
+            'META': environ
+        })),
+        datetime=timezone.now())
 
 
 if WATCH_REQUEST_EVENTS:
-    request_started.connect(request_started_handler, dispatch_uid='easy_audit_signals_request_started')
+    request_started.connect(
+        request_started_handler,
+        dispatch_uid='easy_audit_signals_request_started')

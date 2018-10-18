@@ -13,13 +13,13 @@ from .admin_helpers import prettify_json, EasyAuditModelAdmin
 
 # CRUD events
 class CRUDEventAdmin(EasyAuditModelAdmin):
-    list_display = ['get_event_type_display', 'content_type', 'object_id', 'object_repr_link', 'user_link', 'datetime']
+    list_display = ['get_event_type_display', 'content_type', 'object_id', 'object_repr_link', 'user_link', 'datetime', 'remote_ip']
     date_hierarchy = 'datetime'
     list_filter = ['event_type', 'content_type', 'user', 'datetime', ]
     search_fields = ['=object_id', 'object_json_repr', ]
     readonly_fields = ['event_type', 'object_id', 'content_type',
                        'object_repr', 'object_json_repr_prettified', 'user',
-                       'user_pk_as_string', 'datetime', 'changed_fields_prettified']
+                       'user_pk_as_string', 'datetime', 'changed_fields_prettified', 'remote_ip']
     exclude = ['object_json_repr', 'changed_fields']
 
     def object_repr_link(self, obj):
