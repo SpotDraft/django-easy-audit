@@ -1,10 +1,11 @@
-from django.contrib.auth import signals, get_user_model
+from django.contrib.auth import get_user_model, signals
 from django.db import transaction
-
 from easyaudit.middleware.easyaudit import get_current_request
 from easyaudit.models import LoginEvent
 from easyaudit.settings import WATCH_AUTH_EVENTS
-from easyaudit.utils import (get_client_ip, get_client_browser_info, get_client_operating_system_info)
+from easyaudit.utils import (get_client_browser_info, get_client_ip,
+                             get_client_operating_system_info)
+
 
 def user_logged_in(sender, request, user, **kwargs):
     try:
@@ -27,10 +28,9 @@ def user_logged_out(sender, request, user, **kwargs):
             login_event = LoginEvent.objects.create(login_type=LoginEvent.LOGOUT,
                                                     username=getattr(user, user.USERNAME_FIELD),
                                                     user=user,
-                                                    remote_ip=get_client_ip(request),
-                                                    
-                                     browser=get_client_browser_info(request), 
-                                     operating_system=get_client_operating_system_info(request)
+                                                    remote_ip=get_client_ip(request),                                                    
+                                                    browser=get_client_browser_info(request), 
+                                                    operating_system=get_client_operating_system_info(request)
                                                     )
     except:
         pass
@@ -44,9 +44,9 @@ def user_login_failed(sender, credentials, **kwargs):
             login_event = LoginEvent.objects.create(login_type=LoginEvent.FAILED,
                                                     username=credentials[user_model.USERNAME_FIELD],
                                                     remote_ip=get_client_ip(request), 
-                                                    )
-                                     browser=get_client_browser_info(request), 
-                                     operating_system=get_client_operating_system_info(request)
+                                                    browser=get_client_browser_info(request), 
+                                                    operating_system=get_client_operating_system_info(request)
+            )
     except:
         pass
 

@@ -10,15 +10,13 @@ from django.db import transaction
 from django.db.models import signals
 from django.utils import timezone
 from django.utils.encoding import force_text
-from easyaudit.utils import (get_client_ip, get_client_browser_info, get_client_operating_system_info)
-
-from easyaudit.middleware.easyaudit import get_current_request,\
-                                           get_current_user
+from easyaudit.middleware.easyaudit import (get_current_request,
+                                            get_current_user)
 from easyaudit.models import CRUDEvent
-from easyaudit.settings import REGISTERED_CLASSES, UNREGISTERED_CLASSES,\
-                               WATCH_MODEL_EVENTS, CRUD_DIFFERENCE_CALLBACKS
-from easyaudit.utils import model_delta
-
+from easyaudit.settings import (CRUD_DIFFERENCE_CALLBACKS, REGISTERED_CLASSES,
+                                UNREGISTERED_CLASSES, WATCH_MODEL_EVENTS)
+from easyaudit.utils import (get_client_browser_info, get_client_ip,
+                             get_client_operating_system_info, model_delta)
 
 logger = logging.getLogger(__name__)
 
