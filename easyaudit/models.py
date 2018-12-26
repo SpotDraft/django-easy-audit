@@ -33,6 +33,8 @@ class CRUDEvent(models.Model):
                                      help_text='String version of the user pk', default=None)
     datetime = models.DateTimeField(auto_now_add=True)
     remote_ip = models.CharField(max_length=50, null=True, db_index=True)
+    browser = models.CharField(max_length=100, null=True)
+    operating_system = models.CharField(max_length=100, null=True)
 
     def is_create(self):
         return self.CREATE == self.event_type
@@ -65,6 +67,8 @@ class LoginEvent(models.Model):
                              on_delete=models.SET_NULL)
     remote_ip = models.CharField(max_length=50, null=True, db_index=True)
     datetime = models.DateTimeField(auto_now_add=True)
+    browser = models.CharField(max_length=100, null=True)
+    operating_system = models.CharField(max_length=100, null=True)
 
     class Meta:
         verbose_name = 'login event'
@@ -80,6 +84,8 @@ class RequestEvent(models.Model):
                              on_delete=models.SET_NULL)
     remote_ip = models.CharField(max_length=50, null=True, db_index=True)
     datetime = models.DateTimeField(auto_now_add=True)
+    browser = models.CharField(max_length=100, null=True)
+    operating_system = models.CharField(max_length=100, null=True)
 
     class Meta:
         verbose_name = 'request event'

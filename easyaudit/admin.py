@@ -13,13 +13,13 @@ from .admin_helpers import prettify_json, EasyAuditModelAdmin
 
 # CRUD events
 class CRUDEventAdmin(EasyAuditModelAdmin):
-    list_display = ['get_event_type_display', 'content_type', 'object_id', 'object_repr_link', 'user_link', 'datetime', 'remote_ip']
+    list_display = ['get_event_type_display', 'content_type', 'object_id', 'object_repr_link', 'user_link', 'datetime', 'remote_ip', 'browser', 'operating_system']
     date_hierarchy = 'datetime'
     list_filter = ['event_type', 'content_type', 'user', 'datetime', ]
     search_fields = ['=object_id', 'object_json_repr', ]
     readonly_fields = ['event_type', 'object_id', 'content_type',
                        'object_repr', 'object_json_repr_prettified', 'user',
-                       'user_pk_as_string', 'datetime', 'changed_fields_prettified', 'remote_ip']
+                       'user_pk_as_string', 'datetime', 'changed_fields_prettified', 'remote_ip', 'browser', 'operating_system']
     exclude = ['object_json_repr', 'changed_fields']
 
     def object_repr_link(self, obj):
@@ -55,11 +55,11 @@ if settings.ADMIN_SHOW_MODEL_EVENTS:
 
 # Login events
 class LoginEventAdmin(EasyAuditModelAdmin):
-    list_display = ['datetime', 'get_login_type_display', 'user_link', 'username', 'remote_ip']
+    list_display = ['datetime', 'get_login_type_display', 'user_link', 'username', 'remote_ip', 'browser', 'operating_system']
     date_hierarchy = 'datetime'
     list_filter = ['login_type', 'user', 'datetime', ]
     search_fields = ['=remote_ip', 'username', ]
-    readonly_fields = ['login_type', 'username', 'user', 'remote_ip', 'datetime', ]
+    readonly_fields = ['login_type', 'username', 'user', 'remote_ip', 'datetime',  'browser', 'operating_system']
 
 
 if settings.ADMIN_SHOW_AUTH_EVENTS:
@@ -68,11 +68,11 @@ if settings.ADMIN_SHOW_AUTH_EVENTS:
 
 # Request events
 class RequestEventAdmin(EasyAuditModelAdmin):
-    list_display = ['datetime', 'user_link', 'method', 'url', 'remote_ip']
+    list_display = ['datetime', 'user_link', 'method', 'url', 'remote_ip' , 'browser', 'operating_system']
     date_hierarchy = 'datetime'
     list_filter = ['method', 'user', 'datetime', ]
     search_fields = ['=remote_ip', 'username', 'url', 'query_string', ]
-    readonly_fields = ['url', 'method', 'query_string', 'user', 'remote_ip', 'datetime', ]
+    readonly_fields = ['url', 'method', 'query_string', 'user', 'remote_ip', 'datetime' , 'browser', 'operating_system']
 
 
 if settings.ADMIN_SHOW_REQUEST_EVENTS:

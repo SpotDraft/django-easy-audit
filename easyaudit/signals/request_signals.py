@@ -5,7 +5,7 @@ from django.core.signals import request_started
 from django.http.cookie import SimpleCookie
 from django.utils import six, timezone
 from django.conf import settings
-from easyaudit.utils import get_client_ip
+from easyaudit.utils import (get_client_ip, get_client_browser_info, get_client_operating_system_info)
 
 from easyaudit.models import RequestEvent
 from easyaudit.settings import UNREGISTERED_URLS, WATCH_REQUEST_EVENTS
@@ -67,6 +67,12 @@ def request_started_handler(sender, environ, **kwargs):
         query_string=environ['QUERY_STRING'],
         user=user,
         remote_ip=get_client_ip(record('FakeRequest', {
+            'META': environ
+        })),
+        browser=get_client_browser_info(record('FakeRequest', {
+            'META': environ
+        })), 
+        operating_system=get_client_operating_system_info(record('FakeRequest', {
             'META': environ
         })),
         datetime=timezone.now())

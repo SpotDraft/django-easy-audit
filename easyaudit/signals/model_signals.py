@@ -10,7 +10,7 @@ from django.db import transaction
 from django.db.models import signals
 from django.utils import timezone
 from django.utils.encoding import force_text
-from easyaudit.utils import get_client_ip
+from easyaudit.utils import (get_client_ip, get_client_browser_info, get_client_operating_system_info)
 
 from easyaudit.middleware.easyaudit import get_current_request,\
                                            get_current_user
@@ -98,7 +98,9 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                     user=user,
                     datetime=timezone.now(),
                     user_pk_as_string=str(user.pk) if user else user,
-                    remote_ip=get_client_ip(get_current_request())
+                    remote_ip=get_client_ip(get_current_request()),
+                    browser=get_client_browser_info(get_current_request()), 
+                    operating_system=get_client_operating_system_info(get_current_request())
                 )
     except Exception:
         traceback.print_exc()
@@ -150,7 +152,9 @@ def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
                     user=user,
                     datetime=timezone.now(),
                     user_pk_as_string=str(user.pk) if user else user,
-                    remote_ip=get_client_ip(get_current_request())
+                    remote_ip=get_client_ip(get_current_request()),
+                    browser=get_client_browser_info(get_current_request()), 
+                    operating_system=get_client_operating_system_info(get_current_request())
                 )
     except Exception:
         traceback.print_exc()
@@ -223,7 +227,9 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
                 user=user,
                 datetime=timezone.now(),
                 user_pk_as_string=str(user.pk) if user else user,
-                remote_ip=get_client_ip(get_current_request())
+                remote_ip=get_client_ip(get_current_request()),
+                browser=get_client_browser_info(get_current_request()), 
+                operating_system=get_client_operating_system_info(get_current_request())
             )
     except Exception:
         traceback.print_exc()
@@ -260,7 +266,10 @@ def post_delete(sender, instance, using, **kwargs):
                 user=user,
                 datetime=timezone.now(),
                 user_pk_as_string=str(user.pk) if user else user,
-                remote_ip=get_client_ip(get_current_request())
+                remote_ip=get_client_ip(get_current_request()),
+                browser=get_client_browser_info(get_current_request()), 
+                operating_system=get_client_operating_system_info(get_current_request())
+
             )
     except Exception:
         traceback.print_exc()

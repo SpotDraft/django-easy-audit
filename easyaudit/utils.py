@@ -5,6 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import NOT_PROVIDED, DateTimeField
 from django.utils import timezone
 from ipware import get_client_ip as _get_client_ip
+from user_agents import parse
+
 
 def get_field_value(obj, field):
     """
@@ -66,3 +68,28 @@ def get_client_ip(request):
     if not request:
         return None
     return _get_client_ip(request)[0]
+
+def get_client_browser_info(request):
+    """
+    Returns user browser info in following format :
+    name-version
+    """
+    if not request:
+        return None
+    user_agent_string = request.META['HTTP_USER_AGENT']
+    parsed_user_agent_string = parse(user_agent_string)
+
+    return '-'.join([parsed_user_agent_string.browser.family, parsed_user_agent_string.browser.version_string])
+
+
+def get_client_operating_system_info(request):
+    """
+    Returns User Operating System info in following format :
+    name-version
+    """
+    if not request:
+        return None
+    user_agent_string = request.META['HTTP_USER_AGENT']
+    parsed_user_agent_string = parse(user_agent_string)
+
+    return ' '.join([parsed_user_agent_string.os.family, parsed_user_agent_string.os.version_string])

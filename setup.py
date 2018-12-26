@@ -10,9 +10,9 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-easy-audit',
-    version='1.2',
+    version='1.3',
     packages=find_packages(),
-    install_requires=['django-ipware>=2.1'],
+    install_requires=['django-ipware>=2.1', 'user-agents>=1.1.0'],
     include_package_data=True,
     license='GPL3',
     description='Yet another Django audit log app, hopefully the simplest one.',
