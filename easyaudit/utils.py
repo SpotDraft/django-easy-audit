@@ -23,7 +23,8 @@ def get_field_value(obj, field):
         # to its naive form before we can accuratly compare them for changes.
         try:
             value = field.to_python(getattr(obj, field.name, None))
-            if value is not None and settings.USE_TZ and not timezone.is_naive(value):
+            if value is not None and settings.USE_TZ and not timezone.is_naive(
+                    value):
                 value = timezone.make_naive(value, timezone=timezone.utc)
         except ObjectDoesNotExist:
             value = field.default if field.default is not NOT_PROVIDED else None
@@ -55,8 +56,7 @@ def model_delta(old_model, new_model):
         old_value = get_field_value(old_model, field)
         new_value = get_field_value(new_model, field)
         if old_value != new_value:
-            delta[field.name] = [smart_text(old_value),
-                                 smart_text(new_value)]
+            delta[field.name] = [smart_text(old_value), smart_text(new_value)]
 
     if len(delta) == 0:
         delta = None
@@ -69,6 +69,7 @@ def get_client_ip(request):
         return None
     return _get_client_ip(request)[0]
 
+
 def get_client_browser_info(request):
     """
     Returns user browser info in following format :
@@ -76,10 +77,13 @@ def get_client_browser_info(request):
     """
     if not request:
         return None
-    user_agent_string = request.META['HTTP_USER_AGENT']
+    user_agent_string = request.META.get('HTTP_USER_AGENT', 'Mozilla/5.0')
     parsed_user_agent_string = parse(user_agent_string)
 
-    return '-'.join([parsed_user_agent_string.browser.family, parsed_user_agent_string.browser.version_string])
+    return '-'.join([
+        parsed_user_agent_string.browser.family,
+        parsed_user_agent_string.browser.version_string
+    ])
 
 
 def get_client_operating_system_info(request):
@@ -89,7 +93,10 @@ def get_client_operating_system_info(request):
     """
     if not request:
         return None
-    user_agent_string = request.META['HTTP_USER_AGENT']
+    user_agent_string = request.META.get('HTTP_USER_AGENT', 'Mozilla/5.0')
     parsed_user_agent_string = parse(user_agent_string)
 
-    return ' '.join([parsed_user_agent_string.os.family, parsed_user_agent_string.os.version_string])
+    return ' '.join([
+        parsed_user_agent_string.os.family,
+        parsed_user_agent_string.os.version_string
+    ])
